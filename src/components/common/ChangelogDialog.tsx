@@ -30,8 +30,49 @@ interface ChangelogItem {
 // Sample changelog data - this would come from your backend in a real app
 const changelogData: ChangelogItem[] = [
     {
+        date: 'July 21, 2025',
+        version: '5.0.0',
+        items: [
+            {
+                text: 'Added "ScanBar" Feature for to get nutritional value of a food item by scanning it\'s barcode. Available to all Pro users on nutrition page.',
+                type: 'feature'
+            },
+            {
+                text: 'Updated previous AI models to new AI models. ',
+                type: 'improvement'
+            },
+            {
+                text: 'Slight changes to the UI for a more modern look.',
+                type: 'improvement'
+            },
+            {
+                text: 'Fixed minor UI bugs and improved overall user experience.',
+                type: 'bugfix'
+            }
+        ]
+    },
+    {
+        date: 'July 2, 2025',
+        version: '4.5.0',
+        items: [
+            {
+                text: 'Added real payment portal for subscription management.',
+                type: 'feature'
+            },
+            {
+                text: 'Improved AI model latency and performance.',
+                type: 'improvement'
+            },
+            {
+                text: 'Changed backend architecture for improved scalability and performance.',
+                type: 'improvement'
+            },
+            
+        ]
+    },
+    {
         date: 'June 11, 2025',
-        version: '3.3.0',
+        version: '4.0.0',
         items: [
             {
                 text: 'Fixed well known bugs for a smoother user experience.',
@@ -45,7 +86,7 @@ const changelogData: ChangelogItem[] = [
     },
     {
         date: 'May 5, 2025',
-        version: '3.2.0',
+        version: '3.5.5',
         items: [
             {
                 text: 'Added AI health insights dashboard with personalized recommendations',
@@ -63,7 +104,7 @@ const changelogData: ChangelogItem[] = [
     },
     {
         date: 'April 28, 2025',
-        version: '3.1.5',
+        version: '3.5.0',
         items: [
             {
                 text: 'Added What\'s New changelog feature to keep users updated on platform changes',
@@ -81,7 +122,7 @@ const changelogData: ChangelogItem[] = [
     },
     {
         date: 'April 10, 2025',
-        version: '3.1.0',
+        version: '3.0.0',
         items: [
             {
                 text: 'Introduced telemedicine integration for virtual doctor consultations',
@@ -99,7 +140,7 @@ const changelogData: ChangelogItem[] = [
     },
     {
         date: 'March 28, 2025',
-        version: '3.0.5',
+        version: '2.5.0',
         items: [
             {
                 text: 'Added meal generator on nutrition page with customizable options',
@@ -117,7 +158,7 @@ const changelogData: ChangelogItem[] = [
     },
     {
         date: 'March 25, 2025',
-        version: '3.0.0',
+        version: '2.0.0',
         items: [
             {
                 text: 'Introduced subscription tiers: Free, Lite, and Pro with differentiated features',
@@ -135,7 +176,7 @@ const changelogData: ChangelogItem[] = [
     },
     {
         date: 'March 1, 2025',
-        version: '2.5.0',
+        version: '1.0.0',
         items: [
             {
                 text: 'Official launch of Health Connect platform',
@@ -146,7 +187,7 @@ const changelogData: ChangelogItem[] = [
                 type: 'feature'
             },
             {
-                text: 'Released mobile apps for iOS and Android platforms',
+                text: 'Released initial AI models for personalized health insights',
                 type: 'feature'
             }
         ]
