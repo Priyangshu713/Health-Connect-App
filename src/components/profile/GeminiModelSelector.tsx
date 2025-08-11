@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { useHealthStore, GeminiModelType, GeminiModelOption } from '@/store/healthStore';
 import { 
@@ -9,7 +10,7 @@ import {
   SelectValue 
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot, Zap, Cpu, Brain, Lock } from 'lucide-react';
+import { Bot, Sparkles, Zap, Cpu, Brain, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -23,7 +24,7 @@ const GEMINI_MODELS: GeminiModelOption[] = [
   {
     id: "gemini-2.5-flash",
     name: "Gemini 2.5 Flash",
-    description: "Latest general purpose model with improved capabilities",
+    description: "Latest general-purpose model with improved capabilities",
     isPremium: false,
   },
   {
