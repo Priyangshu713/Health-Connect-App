@@ -18,13 +18,10 @@ Follow these steps to start the development server locally:
 # Step 1: Clone the repository using the Git URL
 git clone https://github.com/Priyangshu713/Health-Connect-App
 
-# Step 2: Navigate to the project directory
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the required dependencies
+# Step 2: Install the required dependencies
 npm install
 
-# Step 4: Start the development server
+# Step 3: Start the development server
 npm run dev
 ```
 
