@@ -435,8 +435,8 @@ const ContactPage = () => {
                                                     <Mail className="h-5 w-5 text-primary" />
                                                 </motion.div>
                                                 <h3 className="font-semibold text-lg mb-1">Email Us</h3>
-                                                <p className="text-muted-foreground break-words">support@healthconnect.com</p>
-                                                <p className="text-muted-foreground break-words">info@healthconnect.com</p>
+                                                <p className="text-muted-foreground break-words">priyangshudutta2003@gmail.com</p>
+                                                <p className="text-muted-foreground break-words">priyangshu713@gmail.com</p>
                                             </CardContent>
                                         </Card>
 
@@ -453,7 +453,7 @@ const ContactPage = () => {
                                                     <Phone className="h-5 w-5 text-health-mint" />
                                                 </motion.div>
                                                 <h3 className="font-semibold text-lg mb-1">Call Us</h3>
-                                                <p className="text-muted-foreground">+1 (800) 123-4567</p>
+                                                <p className="text-muted-foreground">+91 8101020120</p>
                                                 <p className="text-muted-foreground">Mon-Fri, 9am-6pm EST</p>
                                             </CardContent>
                                         </Card>
