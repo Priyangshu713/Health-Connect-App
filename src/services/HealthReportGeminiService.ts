@@ -16,7 +16,7 @@ export interface GeminiRecommendation {
 export const fetchRecommendationsFromGemini = async (
   healthData: HealthData, 
   apiKey: string,
-  modelType: GeminiModelType = "gemini-1.5-flash"
+  modelType: GeminiModelType = "gemini-flash-lite-latest"
 ): Promise<GeminiRecommendation[]> => {
   try {
 
