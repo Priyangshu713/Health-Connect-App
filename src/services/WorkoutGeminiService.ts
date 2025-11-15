@@ -28,7 +28,7 @@ export const analyzeWorkout = async (
     caloriesConsumed: number,
     bmrValue: number,
     apiKey: string,
-    modelType: GeminiModelType = "gemini-1.5-flash"
+    modelType: GeminiModelType = "gemini-flash-lite-latest"
 ): Promise<WorkoutAnalysis> => {
     try {
           
