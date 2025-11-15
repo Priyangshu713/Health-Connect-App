@@ -66,7 +66,7 @@ export interface NutritionAnalysis {
 export const analyzeNutrition = async (
   foodList: string,
   apiKey: string,
-  modelType: GeminiModelType = "gemini-1.5-flash"
+  modelType: GeminiModelType = "gemini-flash-lite-latest"
 ): Promise<NutritionAnalysis> => {
   try {
 
@@ -141,7 +141,7 @@ export const fetchNutritionPlanFromGemini = async (
   healthData: HealthData,
   allergies: string[],
   apiKey: string,
-  modelType: GeminiModelType = "gemini-1.5-flash"
+  modelType: GeminiModelType = "gemini-flash-lite-latest"
 ): Promise<NutritionPlan> => {
   try {
     const controller = new AbortController();
@@ -190,7 +190,7 @@ export const fetchRecipeFromGemini = async (
   mealIdea: string,
   allergies: string[],
   apiKey: string,
-  modelType: GeminiModelType = "gemini-1.5-flash"
+  modelType: GeminiModelType = "gemini-flash-lite-latest"
 ): Promise<Recipe> => {
   try {
     const controller = new AbortController();
@@ -231,7 +231,7 @@ export const fetchRecipeFromGemini = async (
 export const getFoodNutritionInfoFromGemini = async (
   foodName: string,
   apiKey: string,
-  modelType: GeminiModelType = "gemini-1.5-flash"
+  modelType: GeminiModelType = "gemini-flash-lite-latest"
 ): Promise<FoodNutritionInfo> => {
   try {
     const controller = new AbortController();
@@ -274,7 +274,7 @@ export const generateMealFromIngredients = async (
   servings: number,
   restrictions: string[],
   apiKey: string,
-  modelType: GeminiModelType = "gemini-1.5-flash"
+  modelType: GeminiModelType = "gemini-flash-lite-latest"
 ): Promise<MealIdeaFromIngredients> => {
   try {
 
