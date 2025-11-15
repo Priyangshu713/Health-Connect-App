@@ -851,3 +851,31 @@ export const cancelSubscription = async (password: string, reasons: string[]) =>
         throw error;
     }
 };
+
+/**
+ * Get subscription details
+ * @returns {Promise<Object>} Subscription details
+ */
+export const getSubscriptionDetails = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${API_URL}/auth/subscription`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch subscription details');
+    }
+
+    return data;
+};
