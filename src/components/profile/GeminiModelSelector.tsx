@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { useHealthStore, GeminiModelType, GeminiModelOption } from '@/store/healthStore';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bot, Sparkles, Zap, Cpu, Brain, Lock } from 'lucide-react';
@@ -16,20 +16,20 @@ import { useToast } from '@/components/ui/use-toast';
 
 const GEMINI_MODELS: GeminiModelOption[] = [
   {
-    id: "gemini-2.5-flash-lite-preview-06-17",
-    name: "Gemini 2.5 Flash Lite",
+    id: "gemini-flash-lite-latest",
+    name: "Lite (Low Reasoning)",
     description: "Fastest responses with efficient compute",
     isPremium: false,
   },
   {
-    id: "gemini-2.5-flash",
-    name: "Gemini 2.5 Flash",
+    id: "gemini-flash-latest",
+    name: "Flash (Medium Reasoning)",
     description: "Latest general-purpose model with improved capabilities",
     isPremium: false,
   },
   {
     id: "gemini-2.0-flash-thinking-exp-01-21",
-    name: "Gemini 2.0 Flash Thinking",
+    name: "Pro (High Reasoning)",
     description: "Advanced reasoning with step-by-step thinking process",
     isPremium: true,
   },
@@ -37,9 +37,9 @@ const GEMINI_MODELS: GeminiModelOption[] = [
 
 const ModelIcon = ({ model }: { model: GeminiModelType }) => {
   switch (model) {
-    case "gemini-2.5-flash":
+    case "gemini-flash-latest":
       return <Zap className="h-5 w-5 text-health-sky" />;
-    case "gemini-2.5-flash-lite-preview-06-17":
+    case "gemini-flash-lite-latest":
       return <Cpu className="h-5 w-5 text-health-mint" />;
     case "gemini-2.0-flash-thinking-exp-01-21":
       return <Brain className="h-5 w-5 text-purple-500" />;
@@ -51,7 +51,7 @@ const ModelIcon = ({ model }: { model: GeminiModelType }) => {
 const GeminiModelSelector: React.FC = () => {
   const { geminiApiKey, geminiModel, setGeminiModel, geminiTier } = useHealthStore();
   const { toast } = useToast();
-  
+
   if (!geminiApiKey) {
     return null;
   }
@@ -62,7 +62,7 @@ const GeminiModelSelector: React.FC = () => {
 
   const handleModelChange = (value: string) => {
     const selectedModel = GEMINI_MODELS.find(model => model.id === value);
-    
+
     if (isFreeUser) {
       toast({
         title: "AI Models Restricted",
@@ -71,7 +71,7 @@ const GeminiModelSelector: React.FC = () => {
       });
       return;
     }
-    
+
     if (selectedModel?.isPremium && !isPremiumUser) {
       toast({
         title: "Premium Model Restricted",
@@ -80,16 +80,16 @@ const GeminiModelSelector: React.FC = () => {
       });
       return;
     }
-    
+
     setGeminiModel(value as GeminiModelType);
   };
 
   const selectedModel = GEMINI_MODELS.find(model => model.id === geminiModel) || GEMINI_MODELS[0];
-  
+
   // Set background color based on tier
   let cardBgColorClass = "bg-blue-50/50 border-blue-200/70";
   let alertColorClass = "text-blue-700 bg-blue-100 border-blue-200";
-  
+
   if (isPremiumUser) {
     cardBgColorClass = "bg-amber-50/50 border-amber-200/70";
     alertColorClass = "text-amber-700 bg-amber-50 border-amber-200";
@@ -97,7 +97,7 @@ const GeminiModelSelector: React.FC = () => {
     cardBgColorClass = "bg-purple-50/50 border-purple-200/70";
     alertColorClass = "text-purple-700 bg-purple-50 border-purple-200";
   }
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -118,12 +118,12 @@ const GeminiModelSelector: React.FC = () => {
           <div className="space-y-4">
             <Select value={geminiModel} onValueChange={handleModelChange}>
               <SelectTrigger className={`w-full ${cardBgColorClass}`}>
-                <SelectValue placeholder="Select a model" />
+                <SelectValue>{GEMINI_MODELS.find(model => model.id === geminiModel)?.name || 'Select a model'}</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {GEMINI_MODELS.map((model) => (
-                  <SelectItem 
-                    key={model.id} 
+                  <SelectItem
+                    key={model.id}
                     value={model.id}
                     disabled={(model.isPremium && !isPremiumUser) || isFreeUser}
                     className={(model.isPremium && !isPremiumUser) || isFreeUser ? "opacity-60" : ""}
@@ -144,7 +144,7 @@ const GeminiModelSelector: React.FC = () => {
                 ))}
               </SelectContent>
             </Select>
-            
+
             <div className="bg-muted/50 p-4 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
                 <ModelIcon model={selectedModel.id} />
@@ -156,7 +156,7 @@ const GeminiModelSelector: React.FC = () => {
                 )}
               </div>
               <p className="text-sm text-muted-foreground">{selectedModel.description}</p>
-              
+
               {/* Show different messages based on user tier */}
               {isFreeUser && (
                 <div className={`mt-2 flex items-center gap-2 text-xs p-2 rounded border ${alertColorClass}`}>
@@ -164,7 +164,7 @@ const GeminiModelSelector: React.FC = () => {
                   <span>Upgrade to Lite or Pro tier to use AI models</span>
                 </div>
               )}
-              
+
               {!isFreeUser && selectedModel.isPremium && !isPremiumUser && (
                 <div className={`mt-2 flex items-center gap-2 text-xs p-2 rounded border ${alertColorClass}`}>
                   <Lock className="h-3.5 w-3.5" />
