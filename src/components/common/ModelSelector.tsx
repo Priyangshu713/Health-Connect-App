@@ -13,20 +13,20 @@ import { useToast } from '@/components/ui/use-toast';
 
 const GEMINI_MODELS: GeminiModelOption[] = [
   {
-    id: "gemini-2.5-flash-lite-preview-06-17",
-    name: "Gemini 2.5 Flash Lite",
+    id: "gemini-flash-lite-latest",
+    name: "Lite (Low Reasoning)",
     description: "Fastest responses with efficient compute",
     isPremium: false,
   },
   {
-    id: "gemini-2.5-flash",
-    name: "Gemini 2.5 Flash",
+    id: "gemini-flash-latest",
+    name: "Flash (Medium Reasoning)",
     description: "Latest general-purpose model with improved capabilities",
     isPremium: false,
   },
   {
     id: "gemini-2.0-flash-thinking-exp-01-21",
-    name: "Gemini 2.0 Flash Thinking",
+    name: "Pro (High Reasoning)",
     description: "Advanced reasoning with step-by-step thinking process",
     isPremium: true,
   },
@@ -34,9 +34,9 @@ const GEMINI_MODELS: GeminiModelOption[] = [
 
 const ModelIcon = ({ model }: { model: GeminiModelType }) => {
   switch (model) {
-    case "gemini-2.5-flash":
+    case "gemini-flash-latest":
       return <Zap className="h-4 w-4 text-health-sky" />;
-    case "gemini-2.5-flash-lite-preview-06-17":
+    case "gemini-flash-lite-latest":
       return <Cpu className="h-4 w-4 text-health-mint" />;
     case "gemini-2.0-flash-thinking-exp-01-21":
       return <Brain className="h-4 w-4 text-purple-500" />;
