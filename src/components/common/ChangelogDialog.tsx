@@ -30,6 +30,28 @@ interface ChangelogItem {
 // Sample changelog data - this would come from your backend in a real app
 const changelogData: ChangelogItem[] = [
     {
+        date: 'November 16, 2025',
+        version: '5.1.0',
+        items: [
+            {
+                text: 'Updated all project dependencies to their latest versions for improved performance and security.',
+                type: 'improvement'
+            },
+            {
+                text: 'Fixed an issue with the Tailwind CSS integration after a major version update.',
+                type: 'bugfix'
+            },
+            {
+                text: 'Resolved issues related to invalid API keys and outdated AI model names.',
+                type: 'bugfix'
+            },
+            {
+                text: 'Updated the AI model names in the UI to be more user-friendly.',
+                type: 'improvement'
+            }
+        ]
+    },
+    {
         date: 'July 21, 2025',
         version: '5.0.0',
         items: [
@@ -67,7 +89,7 @@ const changelogData: ChangelogItem[] = [
                 text: 'Changed backend architecture for improved scalability and performance.',
                 type: 'improvement'
             },
-            
+
         ]
     },
     {
