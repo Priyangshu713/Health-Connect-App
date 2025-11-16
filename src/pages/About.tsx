@@ -50,14 +50,14 @@ const AboutPage = () => {
       github: "https://github.com/Swapnil8918980827",
       linkedin: "https://www.linkedin.com/in/swapnil-pramanik-774860354/"
     },
-    {
-      name: "Adnan Alam",
-      role: "Backend Developer, API Connection",
-      description: "Develops backend services and integrates external health APIs to enhance the platform's capabilities.",
-      image: "https://avatars.githubusercontent.com/u/204746565?v=4",
-      github: "https://github.com/adnan786397",
-      //linkedin: "https://linkedin.com/in/adnanalam"
-    },
+    // {
+    //   name: "Adnan Alam",
+    //   role: "Backend Developer, API Connection",
+    //   description: "Develops backend services and integrates external health APIs to enhance the platform's capabilities.",
+    //   image: "https://avatars.githubusercontent.com/u/204746565?v=4",
+    //   github: "https://github.com/adnan786397",
+    //   //linkedin: "https://linkedin.com/in/adnanalam"
+    // },
     {
       name: "Anirban Maity",
       role: "Security analyst & PenTester",
