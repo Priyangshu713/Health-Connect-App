@@ -78,24 +78,6 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    overflow-x: hidden;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  @media (max-width: 640px) {
-    html {
-      font-size: 15px;
-    }
-  }
-
-  @supports (padding-top: env(safe-area-inset-top)) {
     body {
         @apply bg-background text-foreground antialiased;
         font-feature-settings:
