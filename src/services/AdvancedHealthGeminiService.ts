@@ -91,7 +91,7 @@ export const analyzeAdvancedHealthData = async (
         stressLevel: safeData.stressLevel,
         waterIntake: safeData.waterIntake,
         caffeine: safeData.caffeine,
-        dite: safeData.diet,
+        diet: safeData.diet,
         regularMeals: safeData.foodHabits.regularMeals ? "true" : "false",
         lateNightSnacking: safeData.foodHabits.lateNightSnacking
           ? "true"
@@ -112,14 +112,14 @@ export const analyzeAdvancedHealthData = async (
       },
     );
 
-    console.log("Received response from backend:", responce.data);
+    console.log("Received response from backend:", response.data);
     controller.abort();
-    if (!responce.data || !responce.data.data) {
-      console.error("Invalid response format:", responce.data);
+    if (!response.data || !response.data.data) {
+      console.error("Invalid response format:", response.data);
       throw new Error("Invalid response format from backend");
     }
 
-    return parseGeminiResponse(responce.data.data);
+    return parseGeminiResponse(response.data.data);
   } catch (error) {
     // Handle errors gracefully
     if (axios.isAxiosError(error)) {
