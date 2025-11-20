@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 export interface WellnessEntry {
     entry: string;
     date?: string;
@@ -13,7 +15,7 @@ export interface WellnessAnalysis {
 
 export const analyzeWellnessEntry = async (entry: string, date?: string): Promise<WellnessAnalysis> => {
     try {
-        const response = await axios.post('/api/analyze-wellness', {
+        const response = await axios.post(`${API_BASE_URL}/api/analyze-wellness`, {
             entry,
             date: date || new Date().toISOString()
         });

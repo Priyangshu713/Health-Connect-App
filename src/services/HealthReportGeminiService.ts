@@ -4,6 +4,8 @@ import { HealthData, GeminiModelType } from "@/store/healthStore";
 import { Recommendation } from "@/lib/healthUtils";
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 export interface GeminiRecommendation {
   id: string;
   title: string;
@@ -26,7 +28,7 @@ export const fetchRecommendationsFromGemini = async (
 
     // console.log("Fetching recommendations from Gemini with data:", healthData); // Removed to prevent API key exposure
     const controller = new AbortController();
-    const response = await axios.post(`/api/health-report`, {
+    const response = await axios.post(`${API_BASE_URL}/api/health-report`, {
       modelType: modelType,
       age: healthData.age || 0,
       gender: healthData.gender || "Not specified",

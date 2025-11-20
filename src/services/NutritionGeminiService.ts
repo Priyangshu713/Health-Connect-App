@@ -2,6 +2,8 @@ import { GoogleGenAI } from "@google/genai";
 import { HealthData, GeminiModelType } from "@/store/healthStore";
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 export interface FoodNutritionInfo {
   name: string;
   calories: string;
@@ -71,7 +73,7 @@ export const analyzeNutrition = async (
   try {
 
     const controller = new AbortController();
-    const responce = await axios.post(`/api/nutrition-analysis`, {
+    const responce = await axios.post(`${API_BASE_URL}/api/nutrition-analysis`, {
       modelType: modelType,
       foodList: foodList,
     }, {
@@ -150,7 +152,7 @@ export const fetchNutritionPlanFromGemini = async (
     }
 
     const controller = new AbortController();
-    const responce = await axios.post(`/api/nutrition-plan-generation`, {
+    const responce = await axios.post(`${API_BASE_URL}/api/nutrition-plan-generation`, {
       modelType: modelType,
       allergies: allergies || [],
       age: healthData.age || 0,
@@ -199,7 +201,7 @@ export const fetchRecipeFromGemini = async (
 ): Promise<Recipe> => {
   try {
     const controller = new AbortController();
-    const responce = await axios.post(`/api/recipe-generation`, {
+    const responce = await axios.post(`${API_BASE_URL}/api/recipe-generation`, {
       modelType: modelType,
       allergies: allergies,
       mealIdea: mealIdea,
@@ -240,7 +242,7 @@ export const getFoodNutritionInfoFromGemini = async (
 ): Promise<FoodNutritionInfo> => {
   try {
     const controller = new AbortController();
-    const responce = await axios.post(`/api/food-nutrition-info`, {
+    const responce = await axios.post(`${API_BASE_URL}/api/food-nutrition-info`, {
       modelType: modelType,
       foodName: foodName,
     }, {
@@ -284,7 +286,7 @@ export const generateMealFromIngredients = async (
   try {
 
     const controller = new AbortController();
-    const responce = await axios.post(`/api/meal-idea-generation`, {
+    const responce = await axios.post(`${API_BASE_URL}/api/meal-idea-generation`, {
       modelType: modelType,
       ingredients: ingredients,
       servings: servings,

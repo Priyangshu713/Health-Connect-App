@@ -3,6 +3,8 @@ import { HealthData, GeminiModelType } from "@/store/healthStore";
 import { useRef } from "react";
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 interface AdvancedHealthData {
   sleepHours: number;
   exerciseHours: number;
@@ -109,7 +111,7 @@ export const analyzeAdvancedHealthData = async (
     let response;
     try {
       response = await axios.post(
-        `/api/advanced-health-analysis`,
+        `${API_BASE_URL}/api/advanced-health-analysis`,
         {
           ...payload,
           modelType,
@@ -126,7 +128,7 @@ export const analyzeAdvancedHealthData = async (
       console.warn("Primary /advanced-health-analysis endpoint failed, trying /health-report fallback...", primaryError);
       try {
         response = await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL_PROD}/health-report`,
+          `${API_BASE_URL}/health-report`,
           {
             modelType: modelType,
             age: payload.age,

@@ -6,6 +6,8 @@ import { getInsightIcon } from './IconProvider';
 import { useHealthStore, GeminiModelType } from "@/store/healthStore";
 import { generateSampleInsights } from './SampleInsightsGenerator';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 // Function to format text content with proper markdown rendering
 const formatInsightContent = (content: string): string => {
   // Handle bold text marked with asterisks
@@ -47,9 +49,9 @@ export const fetchInsightsFromGemini = async (
     }
 
     const controller = new AbortController();
-    // Use relative path to go through Vite proxy
+    // Use configurable base URL
     const response = await axios.post(
-      `/api/health-insights`,
+      `${API_BASE_URL}/api/health-insights`,
       {
         modelType: modelType,
         age: healthData.age || 0,

@@ -1,6 +1,8 @@
 import { GeminiModelType } from "@/store/healthStore";
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 // Message type for chat history
 export interface ChatMessage {
   role: "user" | "model";
@@ -61,8 +63,8 @@ export const createGeminiChatSession = async (apiKey: string, modelType: GeminiM
       console.error("No chat session found in local storage. Please create a new session.");
       try {
         const controller = new AbortController();
-        // Use relative path to go through Vite proxy
-        const newSession = await axios.post(`/api/create-chat-session`,
+        // Use configurable base URL
+        const newSession = await axios.post(`${API_BASE_URL}/api/create-chat-session`,
           { modelType: modelType, mode: mode },
           {
             headers: {
@@ -90,8 +92,8 @@ export const createGeminiChatSession = async (apiKey: string, modelType: GeminiM
     // Define the sendMessageStream function
     const sendMessageStream = async function* (message: string) {
       try {
-        // Use relative path to go through Vite proxy
-        const response = await fetch('/api/send-message', {
+        // Use configurable base URL
+        const response = await fetch(`${API_BASE_URL}/api/send-message`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -170,7 +172,7 @@ export const createGeminiChatSession = async (apiKey: string, modelType: GeminiM
 
 export const fetchChatHistory = async (sessionId: string): Promise<ChatMessage[]> => {
   try {
-    const response = await axios.get(`/api/chat-history/${sessionId}`);
+    const response = await axios.get(`${API_BASE_URL}/api/chat-history/${sessionId}`);
     if (response.data && response.data.success) {
       return response.data.data.map((msg: any) => ({
         role: msg.role,

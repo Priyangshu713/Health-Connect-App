@@ -3,6 +3,8 @@ import { getFoodNutritionInfoFromGemini } from '@/services/NutritionGeminiServic
 import { GeminiModelType } from '@/store/healthStore';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 
 export const searchFoodHealth = async (
   foodName: string,
@@ -75,7 +77,7 @@ const checkIfFoodItem = async (
     // Import GoogleGenerativeAI dynamically to avoid SSR issues
 
     const controller = new AbortController();
-    const responce = await axios.post(`/api/food-identification`, {
+    const responce = await axios.post(`${API_BASE_URL}/api/food-identification`, {
       query: query,
       modelType: modelType,
     }, {
@@ -145,7 +147,7 @@ const getHealthCategorization = async (
     // Import GoogleGenerativeAI dynamically to avoid SSR issues
 
     const controller = new AbortController();
-    const responce = await axios.post(`/api/nutrition-categories`, {
+    const responce = await axios.post(`${API_BASE_URL}/api/nutrition-categories`, {
       foodName: foodName,
       modelType: modelType,
     }, {
