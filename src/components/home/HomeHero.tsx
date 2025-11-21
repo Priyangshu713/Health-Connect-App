@@ -59,7 +59,7 @@ const HomeHero = () => {
   // Use animated title with motion components that will work with the updated VideoHero
   const animatedTitle = (
     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-center">
-      Your Personal Health Journey Starts Here
+      Stop Guessing About Your Health
     </h1>
   );
 
@@ -85,7 +85,7 @@ const HomeHero = () => {
         title={animatedTitle}
         subtitle={
           <p className="text-base md:text-lg max-w-md md:max-w-xl mx-auto text-center">
-            Smart insights, personalized nutrition advice, and health tracking to help you live your best life.
+            Don't let preventable health issues catch you off guard. Join thousands who have unlocked the secret to longevity and vitality with Health Connect.
           </p>
         }
         height={isMobile ? "h-[90vh]" : "h-screen"}

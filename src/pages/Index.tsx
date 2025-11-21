@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import HomeHero from '@/components/home/HomeHero';
 import FeaturesSection from '@/components/home/FeaturesSection';
-import HealthIssuesSection from '@/components/home/HealthIssuesSection';
+import ProductShowcase from '@/components/home/ProductShowcase';
 import GetStartedCTA from '@/components/home/GetStartedCTA';
 import HomeFooter from '@/components/home/HomeFooter';
 import HealthInfoDialog from '@/components/HealthInfoDialog';
@@ -66,7 +66,7 @@ const Index = () => {
       <Navbar />
       <HomeHero />
       <FeaturesSection />
-      <HealthIssuesSection openDialog={openDialog} />
+      <ProductShowcase />
       <GetStartedCTA />
       <HomeFooter />
       
