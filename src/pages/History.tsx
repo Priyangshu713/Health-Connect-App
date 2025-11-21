@@ -14,7 +14,7 @@ import EmptyHistoryState from '@/components/history/EmptyHistoryState';
 export default function History() {
   const navigate = useNavigate();
   const { healthData } = useHealthStore();
-  const { historyEntries, loading } = useHistoryStore();
+  const { historyEntries, loading, fetchHistory } = useHistoryStore();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -24,8 +24,10 @@ export default function History() {
     
     if (!auth) {
       navigate('/profile');
+    } else {
+      fetchHistory();
     }
-  }, [navigate]);
+  }, [navigate, fetchHistory]);
 
   // Redirect if not authenticated
   if (!isAuthenticated) {

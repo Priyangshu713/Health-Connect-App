@@ -8,7 +8,7 @@ import {
     DialogFooter
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Clock, Sparkles, ZapIcon, CheckCircle, Info, ChevronDown, Flame } from 'lucide-react';
+import { Clock, Sparkles, ZapIcon, CheckCircle, Info, ChevronDown, Flame, TrendingUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -31,7 +31,38 @@ interface ChangelogItem {
 // Sample changelog data - this would come from your backend in a real app
 const changelogData: ChangelogItem[] = [
     {
-        date: 'November 20, 2025',
+        date: 'November 22, 2025',
+        version: '6.1.0',
+        isMajor: true,
+        items: [
+            {
+                text: 'Implemented Health History Database Persistence - Your health analysis now saves across all devices!',
+                type: 'feature'
+            },
+            {
+                text: 'Added "Invisible AI" features for Pro users: Smart Daily Insights on Profile and Contextual Food Verdicts.',
+                type: 'feature'
+            },
+            {
+                text: 'Fixed History page tab labels to display proper category names (Sleep, Stress, etc.) instead of adjectives.',
+                type: 'bugfix'
+            },
+            {
+                text: 'Improved Chat Bot formatting for free users - upgrade messages now render properly.',
+                type: 'bugfix'
+            },
+            {
+                text: 'Added automatic page refresh after successful subscription purchase for instant tier activation.',
+                type: 'improvement'
+            },
+            {
+                text: 'Enhanced backend API with new health history endpoints and improved error handling.',
+                type: 'improvement'
+            }
+        ]
+    },
+    {
+        date: 'November 13, 2025',
         version: '6.0.0',
         isMajor: true,
         items: [
@@ -331,7 +362,12 @@ const ChangelogDialog: React.FC<ChangelogDialogProps> = ({ isOpen, onClose }) =>
                                 <Clock className="h-4 w-4 text-muted-foreground" />
                                 <h3 className="text-lg font-medium">{release.date}</h3>
                                 <Badge variant="secondary" className="ml-2">v{release.version}</Badge>
-                                {release.isMajor && (
+                                {idx === 0 && (
+                                    <Badge variant="default" className="ml-2 flex items-center gap-1 bg-green-500 hover:bg-green-600">
+                                        <TrendingUp className="h-3 w-3" /> LATEST
+                                    </Badge>
+                                )}
+                                {release.isMajor && idx !== 0 && (
                                     <Badge variant="destructive" className="ml-2 flex items-center gap-1">
                                         <Flame className="h-3 w-3 fill-current" /> HOT
                                     </Badge>

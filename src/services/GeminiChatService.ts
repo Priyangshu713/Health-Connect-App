@@ -46,13 +46,18 @@ const formatGeminiResponse = (text: string): string => {
   return formattedText;
 };
 
-export const createGeminiChatSession = async (apiKey: string, modelType: GeminiModelType = "gemini-flash-latest", mode: 'chat' | 'symptom-checker' = 'chat') => {
+export const createGeminiChatSession = async (
+  apiKey: string,
+  modelType: GeminiModelType = "gemini-flash-latest",
+  mode: 'chat' | 'symptom-checker' = 'chat',
+  persistSession: boolean = true
+) => {
   const isThinkingModel = modelType.includes("thinking") || modelType === "gemini-flash-latest";
 
   try {
-    console.log(`Creating new Gemini chat session with model: ${modelType}, mode: ${mode}`);
+    console.log(`Creating new Gemini chat session with model: ${modelType}, mode: ${mode}, persist: ${persistSession}`);
     const sessionKey = mode === 'chat' ? "geminiChatSession" : "geminiSymptomCheckerSession";
-    let chatSession = localStorage.getItem(sessionKey);
+    let chatSession = persistSession ? localStorage.getItem(sessionKey) : null;
 
     // If mode has changed, we might want to force a new session, but for now let's rely on the caller to clear session if needed.
     // Actually, if we are switching modes, we probably want a fresh session or the backend to handle it.
@@ -60,7 +65,9 @@ export const createGeminiChatSession = async (apiKey: string, modelType: GeminiM
     // So if the user switches mode, we MUST create a new session.
 
     if (!chatSession) {
-      console.error("No chat session found in local storage. Please create a new session.");
+      if (persistSession) {
+        console.log("No chat session found in local storage. Creating a new session.");
+      }
       try {
         const controller = new AbortController();
         // Use configurable base URL
@@ -73,8 +80,11 @@ export const createGeminiChatSession = async (apiKey: string, modelType: GeminiM
             signal: controller.signal,
           }
         );
-        localStorage.setItem(sessionKey, newSession.data.data);
+
         chatSession = newSession.data.data;
+        if (persistSession) {
+          localStorage.setItem(sessionKey, chatSession!);
+        }
         console.log("New chat session created:", chatSession);
       } catch (error) {
         if (axios.isCancel(error)) {

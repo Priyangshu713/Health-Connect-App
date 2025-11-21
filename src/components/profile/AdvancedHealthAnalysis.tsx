@@ -223,7 +223,7 @@ const AdvancedHealthAnalysis: React.FC<AdvancedHealthAnalysisProps> = ({
 
       setAdvancedAnalysisComplete(true, analysisWithIcons);
 
-      addHistoryEntry({ ...basicHealthData }, result);
+      addHistoryEntry({ ...basicHealthData, ...analysisScores }, result);
 
       toast({
         title: "Analysis Complete",

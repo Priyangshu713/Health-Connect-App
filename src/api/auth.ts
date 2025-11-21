@@ -768,6 +768,7 @@ export const initiatePayment = async (amount: number, duration: string, plain: s
                         localStorage.setItem('geminiTier', tier);
                         // Show success message
                         alert('Payment successful! Your subscription has been activated.');
+                        window.location.reload();
 
                     }
 

@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { InfoIcon, ArrowRight, AlertTriangle, CheckCircle, AlertCircle, Leaf, Pizza, XCircle } from 'lucide-react';
+import { getFoodVerdict, FoodVerdict } from '@/services/InvisibleAIService';
+import { useHealthStore } from '@/store/healthStore';
 
 export interface FoodSearchInfo {
   name: string;
@@ -34,6 +36,22 @@ const FoodSearchResults: React.FC<FoodSearchResultsProps> = ({
   onViewDetails,
   onClose
 }) => {
+  const { healthData, geminiApiKey, geminiTier } = useHealthStore();
+  const [verdict, setVerdict] = React.useState<FoodVerdict | null>(null);
+  const [verdictLoading, setVerdictLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    const fetchVerdict = async () => {
+      if (foodInfo && geminiApiKey && geminiTier === 'pro' && !foodInfo.isNonFood) {
+        setVerdictLoading(true);
+        const data = await getFoodVerdict(foodInfo.name, healthData, geminiApiKey);
+        setVerdict(data);
+        setVerdictLoading(false);
+      }
+    };
+    fetchVerdict();
+  }, [foodInfo, geminiApiKey, geminiTier, healthData]);
+
   if (isLoading) {
     return (
       <Card className="w-full animate-pulse">
@@ -175,6 +193,50 @@ const FoodSearchResults: React.FC<FoodSearchResultsProps> = ({
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {/* Pro Feature: Contextual Verdict */}
+        {geminiTier === 'pro' && (
+          <div className="mb-4">
+            {verdictLoading ? (
+              <div className="h-16 bg-muted/30 rounded-lg animate-pulse" />
+            ) : verdict ? (
+              <div className={`p-3 rounded-lg border flex items-start gap-3 ${verdict.verdict === 'safe' ? 'bg-green-50 border-green-100' :
+                  verdict.verdict === 'caution' ? 'bg-orange-50 border-orange-100' :
+                    'bg-red-50 border-red-100'
+                }`}>
+                <div className={`mt-0.5 p-1 rounded-full ${verdict.verdict === 'safe' ? 'bg-green-100 text-green-600' :
+                    verdict.verdict === 'caution' ? 'bg-orange-100 text-orange-600' :
+                      'bg-red-100 text-red-600'
+                  }`}>
+                  {verdict.verdict === 'safe' ? <CheckCircle className="h-4 w-4" /> :
+                    verdict.verdict === 'caution' ? <AlertCircle className="h-4 w-4" /> :
+                      <AlertTriangle className="h-4 w-4" />}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-bold uppercase tracking-wide ${verdict.verdict === 'safe' ? 'text-green-700' :
+                        verdict.verdict === 'caution' ? 'text-orange-700' :
+                          'text-red-700'
+                      }`}>
+                      {verdict.verdict} for you
+                    </span>
+                    {verdict.healthConditionMatch && (
+                      <Badge variant="outline" className="text-[10px] h-5 bg-white/50">
+                        {verdict.healthConditionMatch}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className={`text-sm mt-0.5 ${verdict.verdict === 'safe' ? 'text-green-800' :
+                      verdict.verdict === 'caution' ? 'text-orange-800' :
+                        'text-red-800'
+                    }`}>
+                    {verdict.reason}
+                  </p>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-primary/5 p-3 rounded-md">
             <div className="text-xs text-muted-foreground">Calories</div>

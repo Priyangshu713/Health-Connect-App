@@ -70,7 +70,9 @@ const HistoryAnalysisList: React.FC<HistoryAnalysisListProps> = ({ historyEntrie
                         {entry.analysis.map((section) => (
                           <TabsTrigger key={section.category} value={section.category} className="flex items-center gap-1.5">
                             {getCategoryIcon(section.category)}
-                            <span className="hidden sm:inline">{section.title.split(' ')[0]}</span>
+                            <span className="hidden sm:inline">
+                              {section.category.charAt(0).toUpperCase() + section.category.slice(1)}
+                            </span>
                           </TabsTrigger>
                         ))}
                       </TabsList>

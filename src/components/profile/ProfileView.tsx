@@ -3,6 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Ruler, Weight, Activity, Droplet } from 'lucide-react';
 import ProfileHeader from '@/components/profile/ProfileHeader';
+import SmartInsightCard from '@/components/profile/SmartInsightCard';
 import ProfileActions from '@/components/profile/ProfileActions';
 import ProfileTabs from '@/components/profile/ProfileTabs';
 import { useToast } from '@/components/ui/use-toast';
@@ -84,6 +85,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onOpenAdvancedAnalysis }) => 
     >
       <main className="container mx-auto max-w-5xl pt-16 sm:pt-20 md:pt-24 pb-16 px-4">
         <ProfileHeader />
+        <SmartInsightCard />
         <ProfileActions onOpenAdvancedAnalysis={onOpenAdvancedAnalysis} />
         <ProfileTabs profileSummary={profileSummary} onReset={handleReset} />
       </main>

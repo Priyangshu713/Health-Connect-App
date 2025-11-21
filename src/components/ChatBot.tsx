@@ -283,15 +283,14 @@ const ChatBot: React.FC<ChatBotProps> = ({ useGemini: initialUseGemini, geminiTi
         let response;
         if (currentGeminiTier === 'free') {
           response = {
-            text: `<div>
-              <p><strong>Upgrade Required</strong></p>
-              <p>To access the AI-powered health assistant with personalized recommendations, please upgrade to our Lite or Pro tier.</p>
-              <ul>
-                <li>Lite Tier: AI-powered personalized responses</li>
-                <li>Pro Tier: Advanced AI models with in-depth health analysis</li>
-              </ul>
-              <p>Click the "Upgrade" button below to access premium features.</p>
-            </div>`
+            text: `**Upgrade Required**
+            
+To access the AI-powered health assistant with personalized recommendations, please upgrade to our Lite or Pro tier.
+
+* Lite Tier: AI-powered personalized responses
+* Pro Tier: Advanced AI models with in-depth health analysis
+
+Click the "Upgrade" button below to access premium features.`
           };
         } else {
           response = await simulateResponse(currentInput);
