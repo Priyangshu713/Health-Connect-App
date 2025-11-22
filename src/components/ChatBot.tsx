@@ -422,12 +422,12 @@ Click the "Upgrade" button below to access premium features.`
 
   return (
     <div className="flex flex-col h-full">
-      <div className="p-3 border-b flex justify-center items-center relative gap-2 bg-muted/30">
+      <div className="p-3 border-b flex justify-between md:justify-center items-center relative gap-2 bg-muted/30">
         <Button
           variant="outline"
           size="icon"
           onClick={() => setShowHelpDialog(true)}
-          className="rounded-full h-8 w-8 absolute left-3"
+          className="rounded-full h-8 w-8 md:absolute md:left-3"
           title="Help & Info"
         >
           <Lightbulb className="h-3 w-3 text-amber-500" />
