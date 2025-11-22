@@ -81,7 +81,7 @@ const HomeHero = () => {
     <>
       {/* Hero Section with surgical team image */}
       <VideoHero
-        imageUrl="/lovable-uploads/80786ea8-1b69-48c8-a9fe-06092d2c5641.png"
+        imageUrl="/lovable-uploads/hero-image-new.png"
         title={animatedTitle}
         subtitle={
           <p className="text-base md:text-lg max-w-md md:max-w-xl mx-auto text-center">

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bot, Send, Sparkles, Brain, ChevronDown, ChevronUp, Lightbulb } from "lucide-react";
+import { Bot, Send, Sparkles, Brain, ChevronDown, ChevronUp, Lightbulb, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { createGeminiChatSession, fetchChatHistory } from '@/services/GeminiChatService';
@@ -129,6 +129,26 @@ const ChatBot: React.FC<ChatBotProps> = ({ useGemini: initialUseGemini, geminiTi
       ...prev,
       [messageId]: !prev[messageId]
     }));
+  };
+
+  const handleClearChat = () => {
+    const sessionKey = mode === 'chat' ? "geminiChatSession" : "geminiSymptomCheckerSession";
+    localStorage.removeItem(sessionKey);
+
+    setMessages([
+      {
+        id: '1',
+        text: mode === 'chat'
+          ? 'Hi there! How can I help with your health questions today?'
+          : 'Hello. I am the Symptom Checker. Please describe your main symptom.',
+        sender: 'bot',
+      },
+    ]);
+
+    toast({
+      title: "Chat Cleared",
+      description: "Your chat history has been cleared.",
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -363,8 +383,6 @@ Click the "Upgrade" button below to access premium features.`
     return `${(ms / 1000).toFixed(1)}s`;
   };
 
-
-
   const handleModeChange = async (newMode: 'chat' | 'symptom-checker') => {
     if (mode === newMode) return;
     setMode(newMode);
@@ -404,33 +422,37 @@ Click the "Upgrade" button below to access premium features.`
 
   return (
     <div className="flex flex-col h-full">
-      <div className="p-3 border-b flex justify-center gap-2 bg-muted/30">
+      <div className="p-3 border-b flex justify-center items-center relative gap-2 bg-muted/30">
         <Button
           variant="outline"
           size="icon"
           onClick={() => setShowHelpDialog(true)}
-          className="rounded-full h-8 w-8"
+          className="rounded-full h-8 w-8 absolute left-3"
+          title="Help & Info"
         >
           <Lightbulb className="h-3 w-3 text-amber-500" />
         </Button>
-        <Button
-          variant={mode === 'chat' ? "default" : "outline"}
-          size="sm"
-          onClick={() => handleModeChange('chat')}
-          className="text-xs h-8 rounded-full"
-        >
-          <Bot className="w-3 h-3 mr-1" />
-          General Chat
-        </Button>
-        <Button
-          variant={mode === 'symptom-checker' ? "default" : "outline"}
-          size="sm"
-          onClick={() => handleModeChange('symptom-checker')}
-          className="text-xs h-8 rounded-full"
-        >
-          <Sparkles className="w-3 h-3 mr-1" />
-          Symptom Checker
-        </Button>
+
+        <div className="flex gap-2">
+          <Button
+            variant={mode === 'chat' ? "default" : "outline"}
+            size="sm"
+            onClick={() => handleModeChange('chat')}
+            className="text-xs h-8 rounded-full"
+          >
+            <Bot className="w-3 h-3 mr-1" />
+            General Chat
+          </Button>
+          <Button
+            variant={mode === 'symptom-checker' ? "default" : "outline"}
+            size="sm"
+            onClick={() => handleModeChange('symptom-checker')}
+            className="text-xs h-8 rounded-full"
+          >
+            <Sparkles className="w-3 h-3 mr-1" />
+            Symptom Checker
+          </Button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4">
@@ -599,6 +621,16 @@ Click the "Upgrade" button below to access premium features.`
 
       <div className="border-t p-4">
         <form onSubmit={handleSubmit} className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={handleClearChat}
+            className="shrink-0 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-colors"
+            title="Clear Chat History"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
           <Input
             placeholder={mode === 'symptom-checker' ? "Describe your symptoms..." : "Type your health question..."}
             value={input}
