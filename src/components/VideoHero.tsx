@@ -12,6 +12,7 @@ interface VideoHeroProps {
   overlay?: boolean;
   className?: string;
   height?: string;
+  mobileBackgroundPosition?: string;
   children?: React.ReactNode;
 }
 
@@ -23,6 +24,7 @@ const VideoHero: React.FC<VideoHeroProps> = ({
   overlay = true,
   className,
   height = 'h-[80vh]',
+  mobileBackgroundPosition,
   children,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -86,7 +88,7 @@ const VideoHero: React.FC<VideoHeroProps> = ({
         style={{ 
           backgroundImage: `url(${effectiveImageUrl})`,
           y: parallaxY,
-          backgroundPosition: 'center',
+          backgroundPosition: mobileBackgroundPosition || 'center',
           backgroundSize: 'cover',
         }} 
         className="absolute inset-0 w-full h-full will-change-transform"
