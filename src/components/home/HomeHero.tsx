@@ -88,7 +88,7 @@ const HomeHero = () => {
             Don't let preventable health issues catch you off guard. Join thousands who have unlocked the secret to longevity and vitality with Health Connect.
           </p>
         }
-        height={isMobile ? "h-[65vh]" : "h-screen"}
+        height={isMobile ? "h-[55vh]" : "h-screen"}
         overlay={true}
         cta={
           <div className="flex flex-col sm:flex-row gap-4 justify-center w-full px-4 sm:px-0 relative z-50 text-center">

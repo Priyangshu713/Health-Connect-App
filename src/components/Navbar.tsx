@@ -54,11 +54,19 @@ const Navbar = () => {
   });
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY > 10) {
+            setIsScrolled(true);
+          } else {
+            setIsScrolled(false);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
@@ -123,24 +131,22 @@ const Navbar = () => {
       if (!isMenuOpen) return;
 
       const target = e.target as HTMLElement;
-      const menuTrigger = document.querySelector('[data-mobile-menu="trigger"]');
       const menuContent = document.querySelector('[data-mobile-menu="content"]');
 
-      if (
-        !menuTrigger?.contains(target) &&
-        !menuContent?.contains(target)
-      ) {
+      // Close if clicking outside the menu content
+      if (menuContent && !menuContent.contains(target)) {
         setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    // Use normal bubbling phase - onClick will run first and stop propagation
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, [isMenuOpen]);
 
   const toggleMenu = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen(prev => !prev);
   };
 
   const handleMobileNavigation = (path: string) => {

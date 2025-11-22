@@ -1,14 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 interface VideoHeroProps {
   videoUrl?: string;
   imageUrl?: string;
   posterUrl?: string;
-  title: React.ReactNode;  // Changed from string to ReactNode
-  subtitle?: React.ReactNode;  // Also update subtitle for consistency
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
   cta?: React.ReactNode;
   overlay?: boolean;
   className?: string;
@@ -27,19 +26,11 @@ const VideoHero: React.FC<VideoHeroProps> = ({
   children,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [parallaxY, setParallaxY] = useState(0);
   const [imageError, setImageError] = useState(false);
 
-  // Parallax effect for the background image
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setParallaxY(scrollPosition * 0.15); // Reduced for more subtle movement
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Optimized parallax effect using useScroll
+  const { scrollY } = useScroll();
+  const parallaxY = useTransform(scrollY, [0, 1000], [0, 150]);
 
   // Handle image load event
   const handleImageLoad = () => {
@@ -91,14 +82,14 @@ const VideoHero: React.FC<VideoHeroProps> = ({
       )}
     >
       {/* Background Image */}
-      <div 
+      <motion.div 
         style={{ 
           backgroundImage: `url(${effectiveImageUrl})`,
-          transform: `translateY(${parallaxY}px)`,
+          y: parallaxY,
           backgroundPosition: 'center',
           backgroundSize: 'cover',
         }} 
-        className="absolute inset-0 w-full h-full transition-transform duration-500 ease-out"
+        className="absolute inset-0 w-full h-full will-change-transform"
       />
       
       {/* Loading state */}
