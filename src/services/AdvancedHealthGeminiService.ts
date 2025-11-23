@@ -61,7 +61,7 @@ export const analyzeAdvancedHealthData = async (
       stressLevel: combinedData.stressLevel || 5,
       waterIntake: combinedData.waterIntake || 2,
       hydrationScore: combinedData.hydrationScore || 50,
-      caffeine: combinedData.caffeine || 2,
+      caffeine: combinedData.caffeine !== undefined ? combinedData.caffeine : 2,
       diet: combinedData.diet || "Balanced",
       regularMeals: combinedData.foodHabits?.regularMeals || false,
       lateNightSnacking: combinedData.foodHabits?.lateNightSnacking || false,
@@ -130,14 +130,7 @@ export const analyzeAdvancedHealthData = async (
         response = await axios.post(
           `${API_BASE_URL}/health-report`,
           {
-            modelType: modelType,
-            age: payload.age,
-            gender: payload.gender,
-            height: payload.height,
-            weight: payload.weight,
-            bmi: payload.bmi,
-            bmiCategory: payload.bmiCategory,
-            bloodGlucose: payload.bloodGlucose,
+            ...payload,
             apiKey: apiKey // Add apiKey to fallback payload
           },
           {
