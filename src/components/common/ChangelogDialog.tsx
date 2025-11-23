@@ -8,10 +8,12 @@ import {
     DialogFooter
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Clock, Sparkles, ZapIcon, CheckCircle, Info, ChevronDown, Flame, TrendingUp } from 'lucide-react';
+import { Clock, Sparkles, ZapIcon, CheckCircle, Info, ChevronDown, Flame, TrendingUp, ExternalLink, History, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 // Define the structure of a changelog entry
 interface ChangelogItem {
@@ -27,6 +29,69 @@ interface ChangelogItem {
         };
     }[];
 }
+
+interface LegacyVersion {
+    version: string;
+    date: string;
+    description: string;
+    imageUrl?: string;
+    link: string;
+    era: string;
+    growth: number; // 0-100 scale for graph
+}
+
+const legacyData: LegacyVersion[] = [
+    {
+        version: "v1.0",
+        date: "March 2025",
+        description: "The beginning of Health Connect. Basic health tracking and initial AI models.",
+        link: "https://health-connect-bice.vercel.app/",
+        era: "The Foundation",
+        growth: 15
+    },
+    {
+        version: "v2.0",
+        date: "March 2025",
+        description: "Introduction of subscription tiers and comprehensive UI improvements.",
+        link: "https://health-connect-bice.vercel.app/",
+        era: "Expansion",
+        growth: 20
+    },
+    {
+        version: "v3.0",
+        date: "April 2025",
+        description: "Telemedicine integration and optimized mobile performance.",
+        link: "https://health-connect-legacy.vercel.app/",
+        era: "Connectivity",
+        growth: 45
+    },
+    {
+        version: "v4.0",
+        date: "June 2025",
+        description: "Major backend re-architecture and faster AI models.",
+        link: "https://health-connect-legacy.vercel.app/",
+        era: "Performance",
+        growth: 55
+    },
+    {
+        version: "v5.0",
+        date: "July 2025",
+        description: "ScanBar feature and modern UI refresh.",
+        link: "https://health-connect-legacy.vercel.app/",
+        era: "Innovation",
+        growth: 65
+    },
+    {
+        version: "v6.0",
+        date: "November 2025",
+        description: "Symptom Checker, Mental Wellness Journal, and Smart Insights.",
+        link: "https://healthconnectofficial.vercel.app/",
+        era: "Intelligence",
+        growth: 90
+    }
+];
+
+const reversedLegacyData = [...legacyData].reverse();
 
 // Sample changelog data - this would come from your backend in a real app
 const changelogData: ChangelogItem[] = [
@@ -341,7 +406,7 @@ const ChangelogDialog: React.FC<ChangelogDialogProps> = ({ isOpen, onClose }) =>
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-2xl">
                 <DialogHeader>
                     <div className="flex items-center gap-2">
                         <Sparkles className="h-5 w-5 text-primary" />
@@ -352,68 +417,158 @@ const ChangelogDialog: React.FC<ChangelogDialogProps> = ({ isOpen, onClose }) =>
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-6 py-4">
-                    {changelogData.map((release, idx) => (
-                        <div key={idx} className="overflow-hidden">
-                            <div
-                                className="flex items-center gap-2 cursor-pointer"
-                                onClick={() => toggleSection(idx)}
-                            >
-                                <Clock className="h-4 w-4 text-muted-foreground" />
-                                <h3 className="text-lg font-medium">{release.date}</h3>
-                                <Badge variant="secondary" className="ml-2">v{release.version}</Badge>
-                                {idx === 0 && (
-                                    <Badge variant="default" className="ml-2 flex items-center gap-1 bg-green-500 hover:bg-green-600">
-                                        <TrendingUp className="h-3 w-3" /> LATEST
-                                    </Badge>
-                                )}
-                                {release.isMajor && idx !== 0 && (
-                                    <Badge variant="destructive" className="ml-2 flex items-center gap-1">
-                                        <Flame className="h-3 w-3 fill-current" /> HOT
-                                    </Badge>
-                                )}
-                                <div className="ml-auto">
-                                    <motion.div
-                                        animate={{ rotate: expandedSections[idx] ? 180 : 0 }}
-                                        transition={{ duration: 0.2 }}
-                                    >
-                                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                                    </motion.div>
-                                </div>
-                            </div>
+                <Tabs defaultValue="updates" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-4">
+                        <TabsTrigger value="updates">Updates</TabsTrigger>
+                        <TabsTrigger value="legacy">Legacy Archives</TabsTrigger>
+                    </TabsList>
 
-                            <AnimatePresence>
-                                {expandedSections[idx] && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: 'auto', opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="overflow-hidden"
-                                    >
-                                        <div className="space-y-3 ml-6 mt-4 mb-2">
-                                            {release.items.map((item, itemIdx) => (
-                                                <div key={itemIdx} className="flex items-start gap-3">
-                                                    {getItemIcon(item.type)}
-                                                    <div className="space-y-1">
-                                                        <span className="text-sm">{item.text}</span>
-                                                        <div className="flex mt-1">
-                                                            {getBadgeText(item.type)}
+                    <TabsContent value="updates" className="space-y-6 py-2">
+                        {changelogData.map((release, idx) => (
+                            <div key={idx} className="overflow-hidden">
+                                <div
+                                    className="flex items-center gap-2 cursor-pointer"
+                                    onClick={() => toggleSection(idx)}
+                                >
+                                    <Clock className="h-4 w-4 text-muted-foreground" />
+                                    <h3 className="text-lg font-medium">{release.date}</h3>
+                                    <Badge variant="secondary" className="ml-2">v{release.version}</Badge>
+                                    {idx === 0 && (
+                                        <Badge variant="default" className="ml-2 flex items-center gap-1 bg-green-500 hover:bg-green-600">
+                                            <TrendingUp className="h-3 w-3" /> LATEST
+                                        </Badge>
+                                    )}
+                                    {release.isMajor && idx !== 0 && (
+                                        <Badge variant="destructive" className="ml-2 flex items-center gap-1">
+                                            <Flame className="h-3 w-3 fill-current" /> HOT
+                                        </Badge>
+                                    )}
+                                    <div className="ml-auto">
+                                        <motion.div
+                                            animate={{ rotate: expandedSections[idx] ? 180 : 0 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                                        </motion.div>
+                                    </div>
+                                </div>
+
+                                <AnimatePresence>
+                                    {expandedSections[idx] && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className="space-y-3 ml-6 mt-4 mb-2">
+                                                {release.items.map((item, itemIdx) => (
+                                                    <div key={itemIdx} className="flex items-start gap-3">
+                                                        {getItemIcon(item.type)}
+                                                        <div className="space-y-1">
+                                                            <span className="text-sm">{item.text}</span>
+                                                            <div className="flex mt-1">
+                                                                {getBadgeText(item.type)}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                                                ))}
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
 
-                            {idx < changelogData.length - 1 && (
-                                <Separator className="my-4" />
-                            )}
+                                {idx < changelogData.length - 1 && (
+                                    <Separator className="my-4" />
+                                )}
+                            </div>
+                        ))}
+                    </TabsContent>
+
+                    <TabsContent value="legacy" className="py-2">
+                        <div className="mb-6 bg-primary/5 p-4 rounded-xl border border-primary/10">
+                            <h3 className="font-semibold flex items-center gap-2 mb-4">
+                                <TrendingUp className="h-4 w-4 text-primary" />
+                                Our Growth Journey
+                            </h3>
+
+                            {/* Growth Graph */}
+                            <div className="h-[160px] w-full mb-4">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={legacyData}>
+                                        <defs>
+                                            <linearGradient id="colorGrowth" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                                                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted-foreground))" opacity={0.1} />
+                                        <XAxis
+                                            dataKey="version"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                                            interval="preserveStartEnd"
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: 'hsl(var(--background))',
+                                                borderColor: 'hsl(var(--border))',
+                                                borderRadius: '8px',
+                                                fontSize: '12px'
+                                            }}
+                                            itemStyle={{ color: 'hsl(var(--primary))' }}
+                                            cursor={{ stroke: 'hsl(var(--primary))', strokeWidth: 1, strokeDasharray: '4 4' }}
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="growth"
+                                            stroke="hsl(var(--primary))"
+                                            strokeWidth={2}
+                                            fillOpacity={1}
+                                            fill="url(#colorGrowth)"
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
+
+                            <p className="text-sm text-muted-foreground">
+                                From a simple health tracker to a comprehensive AI-powered wellness platform. Explore our evolution over time.
+                            </p>
                         </div>
-                    ))}
-                </div>
+
+                        <div className="relative pl-4 border-l-2 border-muted space-y-8 ml-2">
+                            {reversedLegacyData.map((version, idx) => (
+                                <div key={idx} className="relative">
+                                    {/* Timeline dot */}
+                                    <div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-primary border-2 border-background ring-2 ring-primary/20"></div>
+
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <Badge variant="outline" className="font-mono">{version.version}</Badge>
+                                            <span className="text-sm text-muted-foreground flex items-center gap-1">
+                                                <Calendar className="h-3 w-3" />
+                                                {version.date}
+                                            </span>
+                                        </div>
+
+                                        <h4 className="font-semibold text-base">{version.era}</h4>
+                                        <p className="text-sm text-muted-foreground">{version.description}</p>
+
+                                        <Button variant="outline" size="sm" className="w-fit mt-1 h-8" asChild>
+                                            <a href={version.link} target="_blank" rel="noopener noreferrer">
+                                                <History className="mr-2 h-3 w-3" />
+                                                Visit Archive
+                                                <ExternalLink className="ml-2 h-3 w-3 opacity-50" />
+                                            </a>
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </TabsContent>
+                </Tabs>
 
                 <DialogFooter className="pt-2">
                     <Button onClick={onClose} className="w-full sm:w-auto">Close</Button>

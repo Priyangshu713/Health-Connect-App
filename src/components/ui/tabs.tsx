@@ -14,8 +14,7 @@ const TabsList = React.forwardRef<
     className={cn(
       // Use flex so that content can wrap and avoid horizontal overflow on small screens
       // The `flex-nowrap` is applied for medium screens upwards to retain original behaviour
-      // `overflow-x-auto` allows horizontal scrolling if needed while preventing content from spilling out
-      "flex flex-wrap md:flex-nowrap h-auto md:h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground overflow-x-auto",
+      "flex flex-wrap md:flex-nowrap h-auto md:h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
       className
     )}
     {...props}

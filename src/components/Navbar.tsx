@@ -691,7 +691,10 @@ const Navbar = () => {
             }}>
             {(isAuthenticated || isDoctorUser) && (
               <>
-                <div className="flex items-center space-x-3 px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-xl mb-2">
+                <div
+                  onClick={() => setShowAccountSettings(true)}
+                  className="flex items-center space-x-3 px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-xl mb-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
                   <Avatar className="h-10 w-10 bg-primary text-white">
                     {userProfileImage ? (
                       <AvatarImage
@@ -705,7 +708,7 @@ const Navbar = () => {
                     )}
                   </Avatar>
                   <div className="flex flex-col">
-                    <p className="text-sm font-medium">{getUserName()}</p>
+                    <p className="text-sm font-medium text-foreground">{getUserName()}</p>
                     <p className="text-xs text-muted-foreground">{userEmail}</p>
                     {isDoctorUser && (
                       <span className="mt-1 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full w-fit">
@@ -785,15 +788,20 @@ const Navbar = () => {
               </Button>
             )}
 
-            {isAuthenticated && !isDoctorUser && (
+            {(isAuthenticated || isDoctorUser) && (
               <div
-                onClick={() => setShowAccountSettings(true)}
-                className="px-4 py-3 rounded-xl flex items-center space-x-3 hover:bg-accent mobile-touch-target cursor-pointer"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setShowChangelogDialog(true);
+                }}
+                className="px-4 py-3 rounded-xl flex items-center space-x-3 hover:bg-accent mobile-touch-target cursor-pointer text-foreground hover:text-primary hover:bg-black/5"
               >
-                <Settings className="h-5 w-5 text-primary" />
-                <span>Account Settings</span>
+                <Sparkles className="h-5 w-5 text-primary" />
+                <span>What's New</span>
               </div>
             )}
+
+
           </div>
         </div>
       </>

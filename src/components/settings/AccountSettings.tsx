@@ -716,12 +716,12 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ isOpen, onClose }) =>
                                     {/* Profile Image */}
                                     <div className="flex flex-col items-center gap-3 py-2">
                                         <div className="relative">
-                                            <Avatar className="h-20 w-20 border-2 border-primary/20 rounded-full">
+                                                <Avatar className="h-32 w-32 border-2 border-primary/20 rounded-2xl">
                                                 {profileImage ? (
-                                                    <AvatarImage src={profileImage} alt="Profile" className="rounded-full" />
+                                                        <AvatarImage src={profileImage} alt="Profile" className="rounded-2xl object-cover" />
                                                 ) : (
-                                                    <AvatarFallback className="bg-primary/10 text-primary text-xl rounded-full">
-                                                        {profileData?.name?.charAt(0).toUpperCase() || <User />}
+                                                            <AvatarFallback className="bg-primary/10 text-primary text-4xl rounded-2xl">
+                                                                {profileData?.name?.charAt(0).toUpperCase() || <User className="h-12 w-12" />}
                                                     </AvatarFallback>
                                                 )}
                                             </Avatar>

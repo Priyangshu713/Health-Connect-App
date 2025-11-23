@@ -65,10 +65,10 @@ const TermsAndPrivacyPage = () => {
 
             <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-sm rounded-lg border shadow-md p-6 mb-12">
                 <Tabs defaultValue="terms" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid grid-cols-3 mb-6">
-                        <TabsTrigger value="terms" className="text-lg">Terms of Service</TabsTrigger>
-                        <TabsTrigger value="privacy" className="text-lg">Privacy Policy</TabsTrigger>
-                        <TabsTrigger value="data" className="text-lg">Data Processing</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-1 h-auto md:grid-cols-3 mb-6 gap-2">
+                        <TabsTrigger value="terms" className="text-sm md:text-lg py-2">Terms of Service</TabsTrigger>
+                        <TabsTrigger value="privacy" className="text-sm md:text-lg py-2">Privacy Policy</TabsTrigger>
+                        <TabsTrigger value="data" className="text-sm md:text-lg py-2">Data Processing</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="terms" className="space-y-6">
