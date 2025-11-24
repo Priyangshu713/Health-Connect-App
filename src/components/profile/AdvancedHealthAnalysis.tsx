@@ -221,7 +221,7 @@ const AdvancedHealthAnalysis: React.FC<AdvancedHealthAnalysisProps> = ({
           result.find((item) => item.category === "overall")?.score || 70,
       };
 
-      setAdvancedAnalysisComplete(true, analysisWithIcons);
+      setAdvancedAnalysisComplete(analysisScores, analysisWithIcons);
 
       addHistoryEntry({ ...basicHealthData, ...analysisScores }, result);
 

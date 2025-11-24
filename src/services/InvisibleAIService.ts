@@ -39,7 +39,7 @@ export const getDailyInsight = async (
       - Age: ${healthData.age}
       - BMI: ${healthData.bmi} (${healthData.bmiCategory})
       - Sleep Score: ${healthData.sleepScore || 'N/A'}
-      - Stress Score: ${healthData.stressScore || 'N/A'}
+      - Stress Score: ${healthData.stressScore || 'N/A'} (Higher is better, 80-100 means excellent stress management/low stress)
       - Gender: ${healthData.gender}
       
       Return ONLY a valid JSON object with this structure:

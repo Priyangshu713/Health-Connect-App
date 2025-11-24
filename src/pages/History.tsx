@@ -80,7 +80,7 @@ export default function History() {
             <div className="grid gap-6 md:grid-cols-2">
               <HistoryComparisonCard 
                 currentData={healthData} 
-                historicalData={historyEntries[0]?.healthData} 
+                    historicalData={historyEntries[1]?.healthData || historyEntries[0]?.healthData} 
               />
             </div>
           </TabsContent>
