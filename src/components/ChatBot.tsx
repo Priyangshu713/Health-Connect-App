@@ -45,6 +45,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ useGemini: initialUseGemini, geminiTi
   const [isLoading, setIsLoading] = useState(false);
   const [useGemini, setUseGemini] = useState(initialUseGemini);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const healthStore = useHealthStore();
   const { geminiModel, geminiApiKey } = healthStore;
@@ -121,7 +122,15 @@ const ChatBot: React.FC<ChatBotProps> = ({ useGemini: initialUseGemini, geminiTi
   }, [messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (scrollAreaRef.current) {
+      const { scrollHeight, clientHeight } = scrollAreaRef.current;
+      const maxScrollTop = scrollHeight - clientHeight;
+
+      scrollAreaRef.current.scrollTo({
+        top: maxScrollTop,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const toggleThinking = (messageId: string) => {
@@ -300,27 +309,22 @@ const ChatBot: React.FC<ChatBotProps> = ({ useGemini: initialUseGemini, geminiTi
 
       } else {
         // Fallback logic for free tier or simulation
-        let response;
+        let stream;
         if (currentGeminiTier === 'free') {
-          response = {
-            text: `**Upgrade Required**
+          const upgradeMessage = `**Upgrade Required**
             
 To access the AI-powered health assistant with personalized recommendations, please upgrade to our Lite or Pro tier.
 
 * Lite Tier: AI-powered personalized responses
 * Pro Tier: Advanced AI models with in-depth health analysis
 
-Click the "Upgrade" button below to access premium features.`
-          };
+Click the "Upgrade" button below to access premium features.`;
+          stream = streamText(upgradeMessage);
         } else {
-          response = await simulateResponse(currentInput);
+          stream = simulateResponse(currentInput);
         }
 
-        setMessages(prev => prev.map(msg =>
-          msg.id === botMessageId
-            ? { ...msg, text: response.text, isStreaming: false }
-            : msg
-        ));
+        await processStream(stream);
       }
     } catch (error) {
       console.error('Error generating response:', error);
@@ -344,38 +348,36 @@ Click the "Upgrade" button below to access premium features.`
     }
   };
 
-  const simulateResponse = async (query: string): Promise<{ text: string, thinking?: string[] }> => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const lowerQuery = query.toLowerCase();
+  const streamText = async function* (text: string) {
+    const chunkSize = 4; // Characters per chunk
+    for (let i = 0; i < text.length; i += chunkSize) {
+      yield { text: text.slice(i, i + chunkSize) };
+      await new Promise(resolve => setTimeout(resolve, 20)); // Typing delay
+    }
+  };
 
-        if (lowerQuery.includes('headache') || lowerQuery.includes('head pain')) {
-          resolve({
-            text: "Headaches can be caused by various factors such as stress, dehydration, lack of sleep, or eye strain. For occasional headaches, rest, hydration, and over-the-counter pain relievers may help. If you're experiencing severe or recurring headaches, it's best to consult a healthcare professional.",
-          });
-        } else if (lowerQuery.includes('diet') || lowerQuery.includes('eat') || lowerQuery.includes('food')) {
-          resolve({
-            text: "A balanced diet is essential for good health. Try to include plenty of fruits, vegetables, whole grains, lean proteins, and healthy fats in your meals. Limit processed foods, sugary drinks, and excessive salt. Remember to stay hydrated by drinking plenty of water throughout the day.",
-          });
-        } else if (lowerQuery.includes('sleep') || lowerQuery.includes('insomnia')) {
-          resolve({
-            text: "Good sleep hygiene is important for overall health. Aim for 7-9 hours of quality sleep each night. Establish a regular sleep schedule, create a relaxing bedtime routine, and make your bedroom comfortable and free from distractions. Avoid caffeine, large meals, and screen time before bed.",
-          });
-        } else if (lowerQuery.includes('exercise') || lowerQuery.includes('workout')) {
-          resolve({
-            text: "Regular physical activity is beneficial for both physical and mental health. Aim for at least 150 minutes of moderate-intensity aerobic activity or 75 minutes of vigorous activity per week, along with muscle-strengthening activities twice a week. Find activities you enjoy to make exercise a sustainable part of your routine.",
-          });
-        } else if (lowerQuery.includes('stress') || lowerQuery.includes('anxiety')) {
-          resolve({
-            text: "Managing stress is crucial for wellbeing. Consider techniques like deep breathing, meditation, physical activity, or connecting with loved ones. Ensure you're getting enough sleep and maintaining a balanced diet. If stress or anxiety is significantly affecting your daily life, consider speaking with a healthcare provider.",
-          });
-        } else {
-          resolve({
-            text: "I'm here to provide general health information. While I can offer basic guidance on topics like nutrition, exercise, sleep, and common health concerns, I'm not a substitute for professional medical advice. If you have specific health concerns, please consult with a healthcare provider.",
-          });
-        }
-      }, 1000);
-    });
+  const simulateResponse = async function* (query: string) {
+    // Initial delay to simulate thinking
+    await new Promise(resolve => setTimeout(resolve, 600));
+
+    let responseText = "";
+    const lowerQuery = query.toLowerCase();
+
+    if (lowerQuery.includes('headache') || lowerQuery.includes('head pain')) {
+      responseText = "Headaches can be caused by various factors such as stress, dehydration, lack of sleep, or eye strain. For occasional headaches, rest, hydration, and over-the-counter pain relievers may help. If you're experiencing severe or recurring headaches, it's best to consult a healthcare professional.";
+    } else if (lowerQuery.includes('diet') || lowerQuery.includes('eat') || lowerQuery.includes('food')) {
+      responseText = "A balanced diet is essential for good health. Try to include plenty of fruits, vegetables, whole grains, lean proteins, and healthy fats in your meals. Limit processed foods, sugary drinks, and excessive salt. Remember to stay hydrated by drinking plenty of water throughout the day.";
+    } else if (lowerQuery.includes('sleep') || lowerQuery.includes('insomnia')) {
+      responseText = "Good sleep hygiene is important for overall health. Aim for 7-9 hours of quality sleep each night. Establish a regular sleep schedule, create a relaxing bedtime routine, and make your bedroom comfortable and free from distractions. Avoid caffeine, large meals, and screen time before bed.";
+    } else if (lowerQuery.includes('exercise') || lowerQuery.includes('workout')) {
+      responseText = "Regular physical activity is beneficial for both physical and mental health. Aim for at least 150 minutes of moderate-intensity aerobic activity or 75 minutes of vigorous activity per week, along with muscle-strengthening activities twice a week. Find activities you enjoy to make exercise a sustainable part of your routine.";
+    } else if (lowerQuery.includes('stress') || lowerQuery.includes('anxiety')) {
+      responseText = "Managing stress is crucial for wellbeing. Consider techniques like deep breathing, meditation, physical activity, or connecting with loved ones. Ensure you're getting enough sleep and maintaining a balanced diet. If stress or anxiety is significantly affecting your daily life, consider speaking with a healthcare provider.";
+    } else {
+      responseText = "I'm here to provide general health information. While I can offer basic guidance on topics like nutrition, exercise, sleep, and common health concerns, I'm not a substitute for professional medical advice. If you have specific health concerns, please consult with a healthcare provider.";
+    }
+
+    yield* streamText(responseText);
   };
 
   const formatThinkingTime = (ms: number) => {
@@ -455,7 +457,7 @@ Click the "Upgrade" button below to access premium features.`
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4">
+      <div ref={scrollAreaRef} className="flex-1 overflow-y-auto p-4">
         <div className="space-y-4">
           <AnimatePresence initial={false}>
             {messages.map((message) => (

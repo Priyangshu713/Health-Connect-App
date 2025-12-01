@@ -141,9 +141,9 @@ const HealthReport: React.FC = () => {
 
                       <HealthMetricBar
                         label="Blood Glucose"
-                        value={`${healthData.bloodGlucose} mg/dL`}
-                        status={healthData.bloodGlucose && healthData.bloodGlucose <= 99 ? 'Normal' : 'Elevated'}
-                        percentage={healthData.bloodGlucose && healthData.bloodGlucose <= 99 ? 85 : 65}
+                        value={healthData.bloodGlucose ? `${healthData.bloodGlucose} mg/dL` : 'Not Registered'}
+                        status={healthData.bloodGlucose ? (healthData.bloodGlucose <= 99 ? 'Normal' : 'Elevated') : 'Not Set'}
+                        percentage={healthData.bloodGlucose ? (healthData.bloodGlucose <= 99 ? 85 : 65) : 0}
                         delay={0.8}
                       />
                     </div>

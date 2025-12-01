@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle2, ChevronRight, LineChart, Lock, UserRound, Sparkles, Bot } from 'lucide-react';
+import { CheckCircle2, ChevronRight, LineChart, Lock, UserRound, Sparkles, Bot, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useHealthStore } from '@/store/healthStore';
 import { useHistoryStore } from '@/store/historyStore';
 import { useToast } from '@/hooks/use-toast';
 import SubscriptionPlansDialog from '@/components/common/SubscriptionPlansDialog';
 import { Badge } from '@/components/ui/badge';
+import { DownloadReportDialog } from './DownloadReportDialog';
 import {
   Dialog,
   DialogContent,
@@ -27,12 +28,13 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
   const { toast } = useToast();
   const [subscriptionDialogOpen, setSubscriptionDialogOpen] = useState(false);
   const [proTierBanifites, setProTierBenefits] = useState(false);
-  
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
+
   const isProUser = geminiTier === 'pro';
   const isLiteUser = geminiTier === 'lite';
   const isFreeUser = geminiTier === 'free';
-  
-  const itemVariants = {
+
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
   };
@@ -40,8 +42,8 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
   const renderTierBadge = () => {
     if (isFreeUser) {
       return (
-        <Badge 
-          variant="outline" 
+        <Badge
+          variant="outline"
           className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-1.5 px-3 py-1.5 hover:bg-blue-100 cursor-pointer transition-colors"
           onClick={() => setSubscriptionDialogOpen(true)}
         >
@@ -53,8 +55,8 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
 
     if (isLiteUser) {
       return (
-        <Badge 
-          variant="outline" 
+        <Badge
+          variant="outline"
           className="bg-purple-50 text-purple-700 border-purple-200 flex items-center gap-1.5 px-3 py-1.5 hover:bg-purple-100 cursor-pointer transition-colors"
           onClick={() => setSubscriptionDialogOpen(true)}
         >
@@ -66,8 +68,8 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
 
     if (isProUser) {
       return (
-        <Badge 
-          variant="outline" 
+        <Badge
+          variant="outline"
           className="bg-amber-50 text-amber-700 border-amber-200 flex items-center gap-1.5 px-3 py-1.5 hover:bg-amber-100 cursor-pointer transition-colors"
           onClick={() => setProTierBenefits(true)}
         >
@@ -81,11 +83,20 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
   };
 
   const handleAdvancedAnalysisClick = () => {
+    if (!healthData.completedProfile) {
+      toast({
+        title: "Profile Incomplete",
+        description: "Please complete your health profile to unlock Advanced Analysis.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (isFreeUser) {
       setSubscriptionDialogOpen(true);
       return;
     }
-    
+
     onOpenAdvancedAnalysis();
   };
 
@@ -94,17 +105,29 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
       setSubscriptionDialogOpen(true);
       return;
     }
-    
+
     navigate('/doctor-finder');
+  };
+
+  const handleDownloadReportClick = () => {
+    if (!healthData.completedProfile) {
+      toast({
+        title: "Profile Incomplete",
+        description: "Please complete your basic health profile to download your report.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setDownloadDialogOpen(true);
   };
 
   const handleSelectTier = (tier: 'free' | 'lite' | 'pro') => {
     const previousTier = geminiTier;
     setGeminiTier(tier);
-    
+
     // Store tier in localStorage for app-wide access
     localStorage.setItem('geminiTier', tier);
-    
+
     // Set API key if it's a paid tier
     if (tier !== 'free') {
       const envApiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -114,21 +137,21 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
     } else {
       setGeminiApiKey(null);
     }
-    
+
     // Add tier change to history if profile is completed
     if (healthData.completedProfile) {
       // Create a snapshot of current health data when changing tiers
       // This allows tracking health metrics at the time of tier changes
-      addHistoryEntry({...healthData});
+      addHistoryEntry({ ...healthData });
     }
-    
+
     toast({
       title: `${tier === 'free' ? 'Downgraded to Free tier' : `Upgraded to ${tier === 'lite' ? 'Lite' : 'Pro'} tier`}`,
-      description: tier === 'free' 
-        ? "AI features have been disabled" 
+      description: tier === 'free'
+        ? "AI features have been disabled"
         : "You now have access to enhanced AI features",
     });
-    
+
     if (tier === 'pro' && previousTier !== 'pro' && healthData.completedProfile) {
       // Small delay before opening analysis to let the toast show first
       setTimeout(() => {
@@ -139,7 +162,7 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
 
   return (
     <>
-      <motion.div 
+      <motion.div
         variants={itemVariants}
         className="flex flex-col gap-4 mb-6"
       >
@@ -147,7 +170,7 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
         <div className="w-full flex justify-end mb-1">
           {renderTierBadge()}
         </div>
-        
+
         {/* Status Card */}
         <div className="p-2 rounded-lg bg-primary/5 border border-primary/10 flex-1 flex items-center justify-between text-left">
           {healthData.completedProfile ? (
@@ -162,7 +185,7 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
                 onClick={() => {
                   // Add current health data to history when viewing report
                   if (healthData.completedProfile) {
-                    addHistoryEntry({...healthData});
+                    addHistoryEntry({ ...healthData });
                   }
                   window.location.href = '/health-report';
                 }}
@@ -181,15 +204,14 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
             </>
           )}
         </div>
-        
+
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-2">
           <Button
             variant="outline"
             size="sm"
-            className={`gap-2 whitespace-nowrap ${isFreeUser ? 'opacity-70' : ''}`}
+            className={`gap-2 whitespace-nowrap ${!healthData.completedProfile ? 'opacity-50' : (isFreeUser ? 'opacity-70' : '')}`}
             onClick={handleAdvancedAnalysisClick}
-            disabled={!healthData.completedProfile}
           >
 
             {isFreeUser ? (
@@ -199,7 +221,7 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
             )}
             <span className="hidden sm:inline">Advanced</span> Analysis
           </Button>
-          
+
           <Button
             variant="outline"
             size="sm"
@@ -213,14 +235,29 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ onOpenAdvancedAnalysis 
             )}
             Find Specialists
           </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            className={`gap-2 whitespace-nowrap ${!healthData.completedProfile ? 'opacity-50' : ''}`}
+            onClick={handleDownloadReportClick}
+          >
+            <Download className="h-4 w-4 text-primary" />
+            Download Report
+          </Button>
         </div>
       </motion.div>
-      
-      <SubscriptionPlansDialog 
+
+      <SubscriptionPlansDialog
         isOpen={subscriptionDialogOpen}
         onClose={() => setSubscriptionDialogOpen(false)}
         onSelectTier={handleSelectTier}
         initialTab={isFreeUser ? "lite" : isLiteUser ? "lite" : "pro"}
+      />
+
+      <DownloadReportDialog
+        isOpen={downloadDialogOpen}
+        onClose={() => setDownloadDialogOpen(false)}
       />
 
       <Dialog open={proTierBanifites} onOpenChange={setProTierBenefits}>

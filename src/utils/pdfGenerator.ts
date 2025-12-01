@@ -1,4 +1,4 @@
-import { jsPDF } from 'jspdf';
+import { jsPDF, GState } from 'jspdf';
 import { HealthData } from '@/store/healthStore';
 import { Doctor } from '@/types/doctor';
 
@@ -8,7 +8,7 @@ const addWatermark = (doc: jsPDF) => {
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
-    doc.setGState(new doc.GState({ opacity: 0.1 }));
+    doc.setGState(new GState({ opacity: 0.1 }));
     doc.setFontSize(60);
     doc.setTextColor(150, 150, 150);
     doc.text('CONFIDENTIAL', pageWidth / 2, pageHeight / 2, {
@@ -39,7 +39,7 @@ const fetchImageAsBase64 = async (path: string): Promise<string> => {
 
 export const generatePDF = async (
     healthData: HealthData,
-    doctor: Doctor
+    doctor?: Doctor
 ): Promise<Blob> => {
     // 1) Fetch the logo from /public/logo.png
     const logoBase64 = await fetchImageAsBase64('/logo.png');
@@ -55,31 +55,45 @@ export const generatePDF = async (
     // 3) Add the logo near the top-left corner
     // Insert your logo near the top-left corner while preserving aspect ratio
     // The height is set to 0 so jsPDF calculates it automatically based on the original aspect ratio.
-    doc.addImage(logoBase64, 'PNG', 10, 10, 50, 0);
+    doc.addImage(logoBase64, 'PNG', 10, 10, 25, 0);
 
     // Move your title down so it doesn’t overlap the logo
     doc.setFontSize(20);
     doc.setTextColor(0, 102, 204);
     doc.text('Health Data Report', pageWidth / 2, 15, { align: 'center' });
 
-    // Add doctor information
-    doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
-    doc.text(
-        `Generated for Dr. ${doctor.firstName} ${doctor.lastName}`,
-        pageWidth / 2,
-        25,
-        { align: 'center' }
-    );
-    doc.setFontSize(12);
-    doc.text(`Specialty: ${doctor.specialty}`, pageWidth / 2, 32, {
-        align: 'center',
-    });
+    // Add doctor information if available
+    if (doctor) {
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text(
+            `Generated for Dr. ${doctor.firstName} ${doctor.lastName}`,
+            pageWidth / 2,
+            25,
+            { align: 'center' }
+        );
+        doc.setFontSize(12);
+        doc.text(`Specialty: ${doctor.specialty}`, pageWidth / 2, 32, {
+            align: 'center',
+        });
+    } else {
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text(
+            `Personal Health Record`,
+            pageWidth / 2,
+            25,
+            { align: 'center' }
+        );
+    }
 
     // Add date
+    const today = new Date();
+    const dateString = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, 38, {
+    doc.text(`Generated on: ${dateString}`, pageWidth / 2, 38, {
         align: 'center',
     });
 
@@ -216,7 +230,7 @@ export const generatePDF = async (
 
 export const downloadPDF = async (
     healthData: HealthData,
-    doctor: Doctor
+    doctor?: Doctor
 ): Promise<void> => {
     try {
         const pdfBlob = await generatePDF(healthData, doctor);
@@ -224,7 +238,9 @@ export const downloadPDF = async (
 
         const link = document.createElement('a');
         link.href = url;
-        link.download = `health_report_for_dr_${doctor.lastName.toLowerCase()}.pdf`;
+        link.download = doctor
+            ? `health_report_for_dr_${doctor.lastName.toLowerCase()}.pdf`
+            : `health_connect_report_${new Date().toISOString().split('T')[0]}.pdf`;
 
         document.body.appendChild(link);
         link.click();
